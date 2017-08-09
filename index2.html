@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.5.11/p5.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.5.11/addons/p5.dom.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.5.11/addons/p5.sound.min.js"></script>
+    <!-- <script src="sketch.js"></script> -->
+    <link rel="stylesheet" type="text/css" href="style.css">
+      <style>
+      /*body {padding: 0; margin: 0;}*/
+      body{text-align: center;background: #f2f6f8;}
+      .img{position:absolute;z-index:1;}
+
+      #container{
+          display:inline-block;
+          width:320px;
+          height:260px;
+          margin: 0 auto;
+          background: black;
+          position:relative;
+          border:5px solid black;
+          border-radius: 10px;
+          box-shadow: 0 5px 50px #333}
+
+      #gameCanvas{
+          position:relative;
+          z-index:20;
+      }
+
+      </style>
+  </head>
+    <body>
+      <!-- <div id= "container">
+        <canvas id="gameCanvas" width="450" height="400"></canvas> -->
+        <script>
+            /*
+            F5C22D - yellow
+            E43927 - red
+            624392 - purple
+            00A051 - green
+            E85381 - pink
+            0097BF - blue
+            95D2EE - bg
+            F8EFE8 - skimn
+            0C0300 - black
+
+
+
+            */
+            // Where is the circle
+        var x, y;
+
+        function setup() {
+          myCanvas = createCanvas(displayWidth, displayHeight);
+          myCanvas.position(0, 0, 0);
+          // Starts in the middle
+        }
+
+        function draw() {
+          background("#95D2EE");
+
+          // Draw a circle
+          for (var i=0; i<100; i++){
+            Ball();
+          }
+
+        }
+
+        function Ball(){
+          this.xspeed = random(-1, 1);
+          this.yspeed = random(-1, 1);
+          this.stroke(50);
+          this.fill(100);
+          this.x = random(0, width / 2);
+          this.y = random(0, height);
+          ellipse(x, y, 24, 24);
+
+          // Jiggling randomly on the horizontal axis
+          x = x + random(-1, 1);
+          // Moving up at a constant speed
+          y = y - 1;
+
+          // Reset to the bottom
+          if (y < 0) {
+            y = height;
+          }
+        }
+
+
+        </script>
+      </div>
+      <br>
+      <div id="layer2" width="400" height="400"
+      style="position:absolute;left:0;top:150;z-index:1;">
+        <img src="girl.png" style="width:40%;left:0;top:0;z-index:1;">
+      </div>
+  </body>
+</html>

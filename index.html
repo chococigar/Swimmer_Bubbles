@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.5.11/p5.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.5.11/addons/p5.dom.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.5.11/addons/p5.sound.min.js"></script>
+    <!-- <script src="sketch.js"></script> -->
+    <link rel="stylesheet" type="text/css" href="style.css">
+      <style>
+      /*body {padding: 0; margin: 0;}*/
+      body{text-align: center;background: #f2f6f8;}
+      .img{position:absolute;z-index:1;}
+
+      #container{
+          display:inline-block;
+          width:320px;
+          height:260px;
+          margin: 0 auto;
+          background: black;
+          position:relative;
+          border:5px solid black;
+          border-radius: 10px;
+          box-shadow: 0 5px 50px #333}
+
+      #gameCanvas{
+          position:relative;
+          z-index:20;
+      }
+
+
+      </style>
+  </head>
+    <body>
+      <!-- <div id= "container">
+        <canvas id="gameCanvas" width="450" height="400"></canvas> -->
+        <div>
+        <script>
+            /*
+            F5C22D - yellow
+            E43927 - red
+            624392 - purple
+            00A051 - green
+            E85381 - pink
+            0097BF - blue
+            95D2EE - bg
+            F8EFE8 - skimn
+            0C0300 - black
+
+
+
+            */
+            var colorArray = ["#F5C22D", "#E43927", "#624392", "#00A051", "#E85381", "#0097BF"];
+
+            var balls = [];
+
+            var threshold = 30;
+            var accChangeX = 0;
+            var accChangeY = 0;
+            var accChangeT = 0;
+            var myCanvas;
+            var colorlist = [];
+
+
+
+
+            function setup() {
+               myCanvas = createCanvas(displayWidth, displayHeight);
+               myCanvas.position(0, 0, 0);
+               var colored;
+
+               for (var i=0; i<100; i++){
+                 console.log(random(colorArray));
+                 colorlist.push(random(colorArray));
+               }
+               console.log(colorlist)
+              for (var i=0; i<100; i++) {
+                var dummy = new Ball();
+                balls.push(dummy);
+              }
+            }
+
+            function sleep(milliseconds) {
+              var start = new Date().getTime();
+              for (var i = 0; i < 1e7; i++) {
+                if ((new Date().getTime() - start) > milliseconds){
+                  break;
+                }
+              }
+            }
+
+            function draw() {
+              background("#95D2EE");
+              for (var i=0; i<balls.length; i++) {
+                fill(colorlist[i]);
+
+
+                if (balls[i]!=null){
+                balls[i].move();
+                //balls[i].fill("#FA38A2");
+                var cur = balls[i];
+                if ((mouseX>=cur.x - cur.diameter)&&(mouseX <= cur.x + cur.diameter)&&(mouseY >= cur.y - cur.diameter )&&(mouseY <= cur.y + cur.diameter)){
+                  //balls.pop(balls[i]);
+                  balls[i] = null;
+                  //return;
+                }
+
+                if (balls[i]!=null){balls[i].display();}
+              }
+              }
+              // var cur = balls[i];
+              // if ((mouseX>=cur.x - cur.diameter)&&(mouseX <= cur.x + cur.diameter)&&(mouseY >= cur.y - cur.diameter )&&(mouseY <= cur.y + cur.diameter)){
+              //   balls.pop(balls[i]);
+              //   return;
+              // }
+
+              checkForShake();
+             }
+
+            // Ball class
+            function Ball() {
+              this.x = random(width);
+              this.y = random(height);
+              // this.diameter = random(10, 30);
+              this.diameter = 24;
+              this.xspeed = random(-1, 1);
+              this.yspeed = random(-1, 1);
+              this.oxspeed = this.xspeed;
+              this.oyspeed = this.yspeed;
+              this.direction = 0.1;
+
+              this.move = function() {
+                //this.x += this.xspeed * this.direction;
+                this.x += this.xspeed * this.direction * 1.5;
+                // this.y += this.yspeed * this.direction*0.1 -1;
+                this.y += -0.5;
+              };
+
+              // Bounce when touch the edge of the canvas
+              this.turn = function() {
+                if (this.x < 0) {
+                  this.x = 0;
+                  this.direction = -this.direction;
+                }
+                else if (this.y < 0) {
+                  this.y = height;
+                  this.direction = -this.direction;
+                }
+                else if (this.x > width - 20) {
+                  this.x = width - 20;
+                  this.direction = -this.direction;
+                }
+                // else if (this.y > height - 20) {
+                //   this.y = height - 20;
+                //   this.direction = -this.direction;
+                // }
+                else if (this.y > height - 20) {
+                  this.y = height - 20;
+                  //this.direction = -this.direction;
+                }
+                // if (y < 0) {
+                //   y = height;
+                // }
+              };
+
+              // Add to xspeed and yspeed based on
+              // the change in accelerationX value
+              this.shake = function() {
+                this.xspeed += random(5, accChangeX/3);
+                this.yspeed += random(5, accChangeX/3);
+              };
+
+              // Gradually slows down
+              this.stopShake = function() {
+                if (this.xspeed > this.oxspeed) {
+                  this.xspeed -= 0.6;
+                }
+                else {
+                  this.xspeed = this.oxspeed;
+                }
+                if (this.yspeed > this.oyspeed) {
+                  this.yspeed -= 0.6;
+                }
+                else {
+                  this.yspeed = this.oyspeed;
+                }
+              };
+
+              this.display = function() {
+                // var colored = random(colorArray);
+                // this.color = colored;
+                // fill(colored);
+                strokeWeight(7);
+                //mouseIsPressed
+                // if ((mouseX>=this.x - this.diameter)&&(mouseX <= this.x + this.diameter)&&(mouseY >= this.y - this.diameter )&&(mouseY <= this.y + this.diameter)){
+                //   return;
+                // }
+                ellipse(this.x, this.y, this.diameter, this.diameter);
+              };
+            }
+
+            function checkForShake() {
+              // Calculate total change in accelerationX and accelerationY
+              accChangeX = abs(accelerationX - pAccelerationX);
+              accChangeY = abs(accelerationY - pAccelerationY);
+              accChangeT = accChangeX + accChangeY;
+              // If shake
+              if (accChangeT >= threshold) {
+                for (var i=0; i<balls.length; i++) {
+                  balls[i].shake();
+                  balls[i].turn();
+                }
+              }
+              // If not shake
+              else {
+                for (var i=0; i<balls.length; i++) {
+                  //balls[i].stopShake();
+                  if (balls[i]!=null){
+                    balls[i].turn();
+                    balls[i].move();
+                  }
+                }
+              }
+            }
+        </script>
+      </div>
+      <div id="layer2" width="400" height="400"
+      style="position:absolute;left:0%;top:10%;z-index:1;">
+        <img src="girl1.png" style="width:40%;left:0;top:0;z-index:1;">
+      </div>
+  </body>
+</html>
